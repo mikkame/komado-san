@@ -31,7 +31,8 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: build app
         run: yarn electron:build --publish never
+      - run: zip -f dist_electron.zip dist_electron
       - uses: actions/upload-artifact@v2
         with:
           name: MacOSApp
-          path: dist_electron
+          path: dist_electron.zip
