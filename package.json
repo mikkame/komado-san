@@ -7,14 +7,15 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "electron:build": "vue-cli-service electron:build",
-    "electron:serve": "vue-cli-service electron:serve",
+    "electron:serve": "vue-cli-service electron:serve --target web",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
   "main": "background.js",
   "dependencies": {
     "core-js": "^3.6.4",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "vue-moveable": "^1.8.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.3.0",
@@ -24,7 +25,7 @@
     "electron": "^6.0.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
-    "vue-cli-plugin-electron-builder": "~1.4.6",
+    "vue-cli-plugin-electron-builder": "^2.0.0-beta.6",
     "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {
