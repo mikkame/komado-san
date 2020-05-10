@@ -1,59 +1,107 @@
-# This is a basic workflow to help you get started with Actions
 
-name: Build App
+name: Release App
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  tags:
+    - v*
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build_macosx:
-    # The type of runner that the job will run on
-    runs-on: macos-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+  setup-release:
+    name: Setup release
+    needs: test
+    runs-on: ubuntu-latest
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Get url to upload to release from output
+        env:
+          url: ${{ steps.create_release.outputs.upload_url }}
+        run: |
+          mkdir ../artifact
+          echo $url > ../artifact/url.txt
+      - name: Upload artifact to share url with other jobs
+        uses: actions/upload-artifact@v1
+        with:
+          name: artifact
+          path: ../artifact/url.txt
+      - name: Pack source code in zip file
+        run: |
+          mkdir dist
+          cp -R * dist/
+          zip  -r release.zip dist
+      - name: Upload release asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_url.outputs.upload_url }}
+          asset_path: release.zip
+          asset_name: source.zip
+          asset_content_type: application/zip
+  build_macosx:
+    runs-on: macos-latest
+    needs: setup-release
+    steps:
       - uses: actions/checkout@v2
-
-      # Runs a single command using the runners shell
+      - name: Download artifact to get url to upload to release
+        uses: actions/download-artifact@v1
+        with:
+        name: artifact
       - name: yarn install
         run: yarn
-
       - name: lint
         run: yarn lint
-      # Runs a set of commands using the runners shell
       - name: build app
         run: yarn electron:build --publish never
-      - run: zip -r dist_electron.zip dist_electron
-      - uses: actions/upload-artifact@v2
-        with:
-          name: MacOSApp
-          path: dist_electron.zip
+      - run: zip -r release.zip dist_electron/wipe*.dmg
+      - name: Get url to upload to release from artifact
+        id: get_url
+        run: |
+          url=$(cat artifact/url.txt)
+          echo "##[set-output name=upload_url;]$url"
+      - name: Upload release asset
+         uses: actions/upload-release-asset@v1.0.1
+         env:
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+         with:
+           upload_url: ${{ steps.get_url.outputs.upload_url }}
+           asset_path: release.zip
+           asset_name: release-macosx.zip
+           asset_content_type: application/zip
   build_windows:
     runs-on: windows-latest
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    needs: setup-release
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
-      # Runs a single command using the runners shell
+      - name: Download artifact to get url to upload to release
+        uses: actions/download-artifact@v1
+        with:
+        name: artifact
       - name: yarn install
         run: yarn
-
       - name: lint
         run: yarn lint
-      # Runs a set of commands using the runners shell
       - name: build app
         run: yarn electron:build --publish never
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: WindowsApp
-          path: dist_electron
+      - name: Get url to upload to release from artifact
+        id: get_url
+        run: |
+          url=$(cat artifact/url.txt)
+          echo "##[set-output name=upload_url;]$url"
+      - name: Upload release asset
+        uses: actions/upload-release-asset@v1.0.1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            upload_url: ${{ steps.get_url.outputs.upload_url }}
+            asset_path: wipe\ Setup\ ${{ github.ref }}.exe
+            asset_name: release-windows64.zip
+            asset_content_type: application/zip
