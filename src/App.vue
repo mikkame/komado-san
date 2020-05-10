@@ -1,18 +1,16 @@
-<template>
-  <div id="app">
-    <div id="tabs">
-      <div class="tab" v-for="(tab, tab_idx) in tabs" v-bind:key="tab_idx" :class="{active:tab_idx === currentTabIndex}" @click="currentTabIndex = tab_idx">
-        {{tab.title}}
-      </div>
-    </div>
-    <div id="main_src">
-      <component :tab="tabs[currentTabIndex]" v-bind:is="tabs[currentTabIndex].type" @addTab="addTab"></component>
-    </div>
-    <Moveable class="moveable"
-              v-bind="moveable"
-              @drag="handleDrag">
-      <video id="camera" :src="camera_src" ></video>
-    </Moveable>
+<template lang="pug">
+
+  #app
+    .tab-group
+      .tab-item(v-for='(tab, tab_idx) in tabs', v-bind:key='tab_idx', :class='{active:tab_idx === currentTabIndex}', @click='currentTabIndex = tab_idx')
+        | {{tab.title}}
+      .tab-item.tab-item-fixed
+        span.icon.icon-plus
+    #main_src
+      component(:tab='tabs[currentTabIndex]', v-bind:is='tabs[currentTabIndex].type', @addTab='addTab')
+    moveable.moveable(v-bind='moveable', @drag='handleDrag')
+      video#camera(:src='camera_src')
+
 
   </div>
 </template>
@@ -90,21 +88,8 @@ export default {
     height: 100%;
     position: relative;
   }
-  #tabs{
-    height: 40px;
-    width:100%;
-  }
-  .tab {
-    width: 120px;
-    border: 1px solid gray;
-    background: #F0F0F0;
-    box-shadow:0px 0px 6px 3px #E0E0E0 inset;
-    padding: 2px 5px;
-    float: left;
-  }
-  .tab.active {
-    background: #aaa;
-  }
+
+
   #main_src {
     height: calc(100% - 40px);
   }
