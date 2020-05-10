@@ -22,8 +22,8 @@
             const reader = new FileReader();
             reader.onload = (e) => {
               this.blob = e.target.result;
-
             }
+            // TODO mime type filter
             reader.readAsDataURL(this.tab.file);
         }
     }

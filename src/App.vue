@@ -27,6 +27,7 @@
         WebTab(:tab='tab', v-if='tab.type === "WebTab"')
         BlankTab(:tab='tab', v-if='tab.type === "BlankTab"' @changeTab='changeTab')
         FileTab(:tab='tab', v-if='tab.type === "FileTab"')
+        CaptureTab(:tab='tab', v-if='tab.type === "CaptureTab"')
 
     .footer-bar-wrapper
       .footer-bar
@@ -42,7 +43,7 @@
     import BlankTab from './components/BlankTab'
     import WebTab from './components/WebTab'
     import FileTab from './components/FileTab'
-
+    import CaptureTab from "./components/CaptureTab";
 
     import Moveable from 'vue-moveable'
 
@@ -52,7 +53,8 @@
             BlankTab,
             WebTab,
             Moveable,
-            FileTab
+            FileTab,
+            CaptureTab
         },
         data: () => {
             return {
@@ -147,7 +149,7 @@
     }
 </script>
 
-<style>
+<style scoped>
   html, body, #app {
     padding: 0;
     margin: 0;
