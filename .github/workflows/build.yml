@@ -52,8 +52,8 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: build app
         run: yarn electron:build --publish never
-      - run: zip -r dist_electron.zip dist_electron
+
       - uses: actions/upload-artifact@v2
         with:
           name: WindowsApp
-          path: dist_electron.zip
+          path: dist_electron
