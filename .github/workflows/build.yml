@@ -30,7 +30,7 @@ jobs:
         run: yarn lint
       # Runs a set of commands using the runners shell
       - name: build app
-        run: yarn electron:build
+        run: yarn electron:build --publish never
       - uses: actions/upload-artifact@v2
         with:
           name: MacOSApp
