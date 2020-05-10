@@ -1,19 +1,9 @@
-<template>
-    <div id="selector">
-        <ul>
-            <li>
-                <a href="#" @click="addWebTab()">ウェブサイトをタブに追加</a>
-
-            </li>
-            <li>
-                <a href="#" @click="addPDFTab()">PDFをタブに追加</a>
-
-            </li>
-            <li>
-                <a href="#" @click="addCaptureTab()">ウェブサイトをタブに追加</a>
-            </li>
-        </ul>
-    </div>
+<template lang="pug">
+  #selector
+    div
+      form(@submit='addWebTab(search_word)')
+        .form-group
+          input(v-model='search_word', placeholder='Googleで検索').form-control
 </template>
 
 <script>
@@ -23,6 +13,7 @@
     name: 'App',
     props: [
       'tabs',
+      'tab',
       'currentTabIndex'
     ],
     components: {
@@ -30,22 +21,16 @@
     },
     data: () => {
       return {
-        tabs:[
-          {
-            title: "Blank tab",
-            type: "BlankTab",
-
-
-          }
-        ]
+        search_word: ""
       }
     },
     methods:{
-      addWebTab(){
+      addWebTab(search_word){
 
-        this.$emit('addTab',{
+        this.$emit('changeTab',this.tab, {
           title: 'WebTab',
-          type: 'WebTab'
+          type: 'WebTab',
+          url: "https://www.google.com/search?&q="+search_word
         })
 
       }
@@ -53,6 +38,9 @@
   }
 </script>
 <style>
-
+#selector{
+  width: 80%;
+  margin:10% auto 0 auto;
+}
 </style>
 

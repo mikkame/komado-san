@@ -4,10 +4,10 @@
     .tab-group
       .tab-item(v-for='(tab, tab_idx) in tabs', v-bind:key='tab_idx', :class='{active:tab_idx === currentTabIndex}', @click='currentTabIndex = tab_idx')
         | {{tab.title}}
-      .tab-item.tab-item-fixed
+      .tab-item.tab-item-fixed(@click="addTab()")
         span.icon.icon-plus
     #main_src
-      component(:tab='tabs[currentTabIndex]', v-bind:is='tabs[currentTabIndex].type', @addTab='addTab')
+      component(:tab='tabs[currentTabIndex]', v-bind:is='tabs[currentTabIndex].type', @changeTab='changeTab')
     moveable.moveable(v-bind='moveable', @drag='handleDrag')
       video#camera(:src='camera_src')
 
@@ -31,8 +31,8 @@ export default {
     return {
       tabs:[
         {
-          title: "ホームタブ",
-          type: "BlankTab",
+          title: '新しいタブ',
+          type: 'BlankTab',
         },
       ],
       currentTabIndex:0,
@@ -45,9 +45,22 @@ export default {
     }
   },
   methods: {
-    addTab(tab) {
-      this.tabs.push(tab)
-      this.currentTabIndex = this.tabs.length-1;
+    addTab(){
+        this.tabs.push({
+           title:'新しいタブ',
+           type: 'BlankTab'
+        });
+        this.currentTabIndex = this.tabs.length-1;
+    },
+    changeTab(oldTab,newTab) {
+
+      this.tabs.splice(
+          this.tabs.indexOf(oldTab),
+          1,
+          newTab
+      );
+
+
     },
     handleDrag({ target, left, top }) {
       console.log('onDrag left, top', left, top);
