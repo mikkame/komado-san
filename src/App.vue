@@ -3,24 +3,27 @@
   #app
     #overlay
       Moveable.moveable(
-        v-if="camera_src",
+
+        v-if="camera_src && !full_screen_camera",
         v-bind="moveable",
         @drag="handleDrag",
-        @resize="handleResize",
         @scale="handleScale"
-
+        :style="{transform:camera_transform}"
       )
-        video(:srcObject.prop="camera_src" v-if="camera_src", autoplay)#cam
+        video(:srcObject.prop="camera_src" v-if="camera_src", autoplay, @dblclick="toggleFulScreenCamera()")#cam
     .tab-group
       .tab-item(v-for='(tab, tab_idx) in tabs', v-bind:key='tab_idx', :class='{active:tab_idx === currentTabIndex}', @click='currentTabIndex = tab_idx')
-
         | {{tab.title}}
         span.icon-circle(@click="removeTab(tab)")
           span.icon.icon-cancel
       .tab-item.tab-item-fixed(@click="addTab()")
         span.icon.icon-plus
     #main_src
-      component(:tab='tabs[currentTabIndex]', v-bind:is='tabs[currentTabIndex].type', @changeTab='changeTab')
+      div(v-if='full_screen_camera')#fullCamera-wrap
+        video(:srcObject.prop="camera_src", autoplay, @dblclick="toggleFulScreenCamera()")#fullCamera
+      div(v-else)
+        component(:tab='tabs[currentTabIndex]', v-bind:is='tabs[currentTabIndex].type', @changeTab='changeTab')
+
     .footer-bar-wrapper
       .footer-bar
         button.btn.btn-default(@click="toggleCamera()")
@@ -45,6 +48,7 @@
         },
         data: () => {
             return {
+                camera_transform:null,
                 moveable: {
                     draggable: true,
                     throttleDrag: 0,
@@ -62,11 +66,16 @@
                     },
                 ],
                 currentTabIndex: 0,
-
-                camera_src: null
+                camera_src: null,
+                full_screen_camera:false
             }
         },
         methods: {
+            toggleFulScreenCamera(){
+
+              this.full_screen_camera = !this.full_screen_camera;
+
+            },
             addTab() {
                 this.tabs.push({
                     title: '新しいタブ',
@@ -102,32 +111,14 @@
                     this.camera_src = await navigator.mediaDevices.getUserMedia({video: true})
                 }
             },
-            handleDrag({ target, transform }) {
-                console.log('onDrag left, top', transform);
-                target.style.transform = transform;
+            handleDrag({ transform }) {
+                this.camera_transform = transform;
+
             },
-            handleResize({
-                             target, width, height, delta,
-                         }) {
-                console.log('onResize', width, height);
-                delta[0] && (target.style.width = `${width}px`);
-                delta[1] && (target.style.height = `${height}px`);
+            handleScale({ transform, }) {
+                this.camera_transform = transform;
             },
-            handleScale({ target, transform, scale }) {
-                console.log('onScale scale', scale);
-                target.style.transform = transform;
-            },
-            handleRotate({ target, dist, transform }) {
-                console.log('onRotate', dist);
-                target.style.transform = transform;
-            },
-            handleWarp({ target, transform }) {
-                console.log('onWarp', transform);
-                target.style.transform = transform;
-            },
-            handlePinch({ target }) {
-                console.log('onPinch', target);
-            },
+
 
         }
     }
@@ -140,7 +131,16 @@
     height: 100%;
     position: relative;
   }
-
+  #fullCamera-wrap {
+    width: 100%;
+    height: 100%;
+    background: black;
+    z-index: 10000;
+  }
+  #fullCamera {
+    width: 100%;
+    height: 100%;
+  }
   .btn {
     cursor: pointer;
   }
