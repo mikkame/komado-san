@@ -1,0 +1,16 @@
+.moveable-line.moveable-rotation-line {
+    height: 40px;
+    width: 1px;
+    transform-origin: 0.5px 39.5px;
+}
+.moveable-control {
+    background: black !important;
+    border-radius: 0 !important;
+    width: 10px !important;
+    height: 10px !important;
+    margin-top: -5px;
+    margin-left: -5px;
+}
+.moveable-line {
+    background: black !important;
+}
