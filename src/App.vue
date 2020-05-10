@@ -19,10 +19,11 @@
       .tab-item.tab-item-fixed(@click="addTab()")
         span.icon.icon-plus
     #main_src
-      div(v-if='full_screen_camera')#fullCamera-wrap
+      div(v-show='full_screen_camera')#fullCamera-wrap
         video(:srcObject.prop="camera_src", autoplay, @dblclick="toggleFulScreenCamera()")#fullCamera
-      div(v-else)
-        component(:tab='tabs[currentTabIndex]', v-bind:is='tabs[currentTabIndex].type', @changeTab='changeTab')
+      div(v-show='!full_screen_camera && tab_idx === currentTabIndex' v-for="(tab, tab_idx) in tabs",).tab-content
+        WebTab(:tab='tab', v-if='tab.type === "WebTab"' @changeTab='changeTab')
+        BlankTab(:tab='tab', v-if='tab.type === "BlankTab"' @changeTab='changeTab')
 
     .footer-bar-wrapper
       .footer-bar
@@ -82,6 +83,7 @@
                     type: 'BlankTab'
                 });
                 this.currentTabIndex = this.tabs.length - 1;
+                console.log(this)
             },
             changeTab(oldTab, newTab) {
                 this.tabs.splice(
@@ -118,8 +120,6 @@
             handleScale({ transform, }) {
                 this.camera_transform = transform;
             },
-
-
         }
     }
 </script>
@@ -144,7 +144,10 @@
   .btn {
     cursor: pointer;
   }
-
+  .tab-content {
+    height: 100%;
+    width: 100%;
+  }
   span.icon-circle {
     height: 16px;
     width: 16px;
