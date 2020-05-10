@@ -1,4 +1,13 @@
-# wipe
+# CODE NAME -> wipe
+
+# 正式名称募集中 -> [#10](https://github.com/mikkame/the_wipe/issues/10)
+
+# What's this
+
+https://note.com/fladdict/n/n52d2ede146a2
+
+こういう物が欲しいらしい！
+Electronでできそうだし作ろうじゃないか！
 
 ## Project setup
 ```
@@ -7,12 +16,12 @@ yarn install
 
 ### Compiles and hot-reloads for development
 ```
-yarn serve
+yarn electron:serve
 ```
 
 ### Compiles and minifies for production
 ```
-yarn build
+yarn electron:build
 ```
 
 ### Lints and fixes files
@@ -20,5 +29,7 @@ yarn build
 yarn lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+# How to Contribute
+
+基本日本語のやりとりでOKです。
+やりとりはIssue/PRでお願いします！
