@@ -38,23 +38,22 @@ jobs:
           path: dist_electron.zip
   build_windows:
     runs-on: windows-latest
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
 
-      # Steps represent a sequence of tasks that will be executed as part of the job
-      steps:
-        # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-        - uses: actions/checkout@v2
+      # Runs a single command using the runners shell
+      - name: yarn install
+        run: yarn
 
-        # Runs a single command using the runners shell
-        - name: yarn install
-          run: yarn
-
-        - name: lint
-          run: yarn lint
-        # Runs a set of commands using the runners shell
-        - name: build app
-          run: yarn electron:build --publish never
-        - run: zip -r dist_electron.zip dist_electron
-        - uses: actions/upload-artifact@v2
-          with:
-            name: WindowsApp
-            path: dist_electron.zip
+      - name: lint
+        run: yarn lint
+      # Runs a set of commands using the runners shell
+      - name: build app
+        run: yarn electron:build --publish never
+      - run: zip -r dist_electron.zip dist_electron
+      - uses: actions/upload-artifact@v2
+        with:
+          name: WindowsApp
+          path: dist_electron.zip
