@@ -1,6 +1,8 @@
 <template lang="pug">
 
-  #app
+  #app(@drop="dropFile", @dragover.prevent, @dragenter.prevent="draging = true" ,@dragend="draging = false" :class="{draging:draging}")
+
+    #dragfield(v-if="draging", style='width:100%;height:100%;background:rgba(255,255,255,0.6)')
     #overlay
       Moveable.moveable(
 
@@ -22,8 +24,9 @@
       div(v-show='full_screen_camera')#fullCamera-wrap
         video(:srcObject.prop="camera_src", autoplay, @dblclick="toggleFulScreenCamera()")#fullCamera
       div(v-show='!full_screen_camera && tab_idx === currentTabIndex' v-for="(tab, tab_idx) in tabs",).tab-content
-        WebTab(:tab='tab', v-if='tab.type === "WebTab"' @changeTab='changeTab')
+        WebTab(:tab='tab', v-if='tab.type === "WebTab"')
         BlankTab(:tab='tab', v-if='tab.type === "BlankTab"' @changeTab='changeTab')
+        FileTab(:tab='tab', v-if='tab.type === "FileTab"')
 
     .footer-bar-wrapper
       .footer-bar
@@ -38,6 +41,9 @@
 
     import BlankTab from './components/BlankTab'
     import WebTab from './components/WebTab'
+    import FileTab from './components/FileTab'
+
+
     import Moveable from 'vue-moveable'
 
     export default {
@@ -45,10 +51,12 @@
         components: {
             BlankTab,
             WebTab,
-            Moveable
+            Moveable,
+            FileTab
         },
         data: () => {
             return {
+                draging:false,
                 camera_transform:null,
                 moveable: {
                     draggable: true,
@@ -83,7 +91,7 @@
                     type: 'BlankTab'
                 });
                 this.currentTabIndex = this.tabs.length - 1;
-                console.log(this)
+
             },
             changeTab(oldTab, newTab) {
                 this.tabs.splice(
@@ -120,6 +128,21 @@
             handleScale({ transform, }) {
                 this.camera_transform = transform;
             },
+            dropFile(event) {
+                this.draging = false
+                event.preventDefault()
+                const files =  event.dataTransfer.files;
+                for (var i = 0; i < files.length; i++) {
+                    let file = files[i]
+                    this.tabs.push({
+                        title : file.name,
+                        type: 'FileTab',
+                        file
+                    })
+                }
+
+            },
+
         }
     }
 </script>
@@ -219,6 +242,12 @@
     right: 0;
     z-index: 1;
   }
+  #dragfield {
+    width: 100%;
+    height: 100%;
 
+    background: rgba(255, 255, 255, 0.3);
+    pointer-events: none;
+  }
 
 </style>
