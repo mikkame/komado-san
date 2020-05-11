@@ -8,7 +8,7 @@
           span.icon.icon-right
         button.btn.btn-large.btn-default
           span.icon.icon-cw
-      form(@submit="loadURL()")
+      form(@submit="loadURL")
         input.form-control(v-model="current_address")
     webview(:src='tab.url', )
 
@@ -51,7 +51,8 @@
             goForward() {
                 this.$el.querySelector('webview').goForward()
             },
-            loadURL() {
+            loadURL(event) {
+                event.preventDefault()
                 this.$el.querySelector('webview').loadURL(this.current_address)
             }
         }
