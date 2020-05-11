@@ -88,6 +88,9 @@ jobs:
         run: yarn electron:build --publish never
 
         shell: bash
+      - name: pickup zip
+        run: zip -r release.zip dist_electron/wipe*.exe
+        shell: bash
       - name: Upload release asset
         uses: actions/upload-release-asset@v1.0.1
         env:
