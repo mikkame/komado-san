@@ -6,8 +6,10 @@
           span.icon.icon-left
         button.btn.btn-large.btn-default(v-bind:disabled="!can_go_forward", @click="goForward()")
           span.icon.icon-right
-        button.btn.btn-large.btn-default
+        button.btn.btn-large.btn-default(@click="reload", v-if="!loading")
           span.icon.icon-cw
+        button.btn.btn-large.btn-default(@click="loadStop", v-if="loading")
+          span.icon.icon-cancel
       form(@submit="loadURL")
         input.form-control(v-model="current_address")
     webview(:src='tab.url', )
@@ -25,25 +27,40 @@
         components: {},
         data: () => {
             return {
+                loading:false,
                 current_address: '',
                 can_go_back: false,
                 can_go_forward:false,
             }
         },
         mounted() {
-
-            this.$el.querySelector('webview').addEventListener('did-finish-load', this.update);
+            const webview = this.$el.querySelector('webview');
+            webview.addEventListener('did-stop-loading', this.update);
+            webview.addEventListener('load-commit', this.loadStart);
+            webview.addEventListener('page-title-updated', this.updateTitle);
         },
         methods: {
-            update(){
+            updateTitle(){
                 const webview = this.$el.querySelector('webview');
                 this.tab.title = webview.getTitle()
+
+            },
+            loadStart(){
+                const webview = this.$el.querySelector('webview');
+                this.loading = true
                 this.current_address = webview.getURL()
+            },
+            update(){
+                const webview = this.$el.querySelector('webview');
                 this.can_go_back = webview.canGoBack()
                 this.can_go_forward = webview.canGoForward()
+                this.loading = false
             },
             reload() {
                 this.$el.querySelector('webview').reload()
+            },
+            loadStop() {
+                this.$el.querySelector('webview').stop()
             },
             goBack() {
                 this.$el.querySelector('webview').goBack()
