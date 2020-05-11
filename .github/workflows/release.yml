@@ -81,6 +81,7 @@ jobs:
         run: |
           url=$(cat artifact/url.txt)
           echo "##[set-output name=upload_url;]$url"
+        shell: bash
       - name: yarn install
         run: yarn
       - name: build app
