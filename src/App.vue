@@ -1,11 +1,7 @@
 <template lang="pug">
-
-  #app(@drop="dropFile", @dragover.prevent, @dragenter.prevent="draging = true" ,@dragend="draging = false" :class="{draging:draging}")
-
-    #dragfield(v-if="draging", style='width:100%;height:100%;background:rgba(255,255,255,0.6)')
+  #app(@drop="dropFile", @dragover.prevent, @dragenter.prevent, :class="{draging:draging}")
     #overlay
       Moveable.moveable(
-
         v-if="camera_src && !full_screen_camera",
         v-bind="moveable",
         @drag="handleDrag",
@@ -58,7 +54,7 @@
         },
         data: () => {
             return {
-                draging:false,
+
                 camera_transform:null,
                 moveable: {
                     draggable: true,
@@ -131,7 +127,7 @@
                 this.camera_transform = transform;
             },
             dropFile(event) {
-                this.draging = false
+
                 event.preventDefault()
                 const files =  event.dataTransfer.files;
                 for (var i = 0; i < files.length; i++) {
@@ -141,6 +137,7 @@
                         type: 'FileTab',
                         file
                     })
+                    this.currentTabIndex = this.tabs.length -1;
                 }
 
             },
