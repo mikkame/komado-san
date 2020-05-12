@@ -33,10 +33,7 @@
           span.icon.icon-camera
           | カメラ
           | {{camera_src ? "Off" : "On"}}
-        button.btn.btn-default(@click="pen = !pen")
-          span.icon.icon-brush
-          | ペンモード
-          | {{pen ? "Off" : "On"}}
+
 </template>
 
 <script>
@@ -191,6 +188,9 @@
 
             },
         },
+        async mounted() {
+            this.camera_src = await navigator.mediaDevices.getUserMedia({video: true})
+        }
 
     }
 </script>
