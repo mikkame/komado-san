@@ -1,5 +1,5 @@
 <template lang="pug">
-  #app(@drop="dropFile", @dragover.prevent, @dragenter.prevent)
+  #app(@drop="dropFile", @dragover.prevent, @dragenter.prevent, @keydown.shift="pen =true", @keyup="pen =false", tabindex="0")
 
     Moveable.moveable(
       v-if="camera_src && !full_screen_camera",
@@ -84,44 +84,36 @@
         },
         methods: {
             strokeToPathString(stroke){
-                let path = 'M ';
-                path+=stroke.start.x +' '+stroke.start.y+' ';
-                path+=stroke.points.map((point) => {
+
+                return stroke.points.map((point) => {
                     return 'L ' + point.x +' '+ point.y
-                }).join(' ')
-                return path;
+                }).join(' ').replace(/^L/, 'M');
             },
             pen_start(event)
             {
-
                 const stroke = {
-                    start: {
-                        x: event.offsetX,
-                        y: event.offsetY,
-                    },
                     points: [],
                 }
                 this.pen_drawing =true
                 this.pen_strokes.push(stroke)
+                this.pen_stroke(event)
 
             },
             pen_end(){
-                if (this.pen_drawing) {
-                    this.pen_drawing =false
-                    this.pen = false
-                    setTimeout(() => {
-                        this.pen_strokes.splice(this.pen_strokes.indexOf(this.pen_strokes[this.pen_strokes.length-1]),1)
-                    },1000)
-                }
-
+                this.pen_drawing =false
             },
             pen_stroke(event){
 
                 if (this.pen_drawing) {
-                    this.pen_strokes[this.pen_strokes.length-1].points.push({
+                    const stroke = this.pen_strokes[this.pen_strokes.length-1]
+                    const point ={
                         x: event.offsetX,
                         y: event.offsetY,
-                    })
+                    }
+                    setTimeout(() => {
+                        stroke.points.splice(stroke.points.indexOf(point),1)
+                    },1000)
+                    stroke.points.push(point)
                 }
             },
             toggleFulScreenCamera(){
@@ -188,9 +180,6 @@
 
             },
         },
-        async mounted() {
-            this.camera_src = await navigator.mediaDevices.getUserMedia({video: true})
-        }
 
     }
 </script>
