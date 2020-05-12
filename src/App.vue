@@ -1,14 +1,14 @@
 <template lang="pug">
   #app(@drop="dropFile", @dragover.prevent, @dragenter.prevent)
-    #overlay
-      Moveable.moveable(
-        v-if="camera_src && !full_screen_camera",
-        v-bind="moveable",
-        @drag="handleDrag",
-        @scale="handleScale"
-        :style="{transform:camera_transform}"
-      )
-        video(:srcObject.prop="camera_src" v-if="camera_src", autoplay, @dblclick="toggleFulScreenCamera()")#cam
+
+    Moveable.moveable(
+      v-if="camera_src && !full_screen_camera",
+      v-bind="moveable",
+      @drag="handleDrag",
+      @scale="handleScale"
+      :style="{transform:camera_transform}"
+    )
+      video(:srcObject.prop="camera_src" v-if="camera_src", autoplay, @dblclick="toggleFulScreenCamera()")#cam
     .tab-group
       .tab-item(v-for='(tab, tab_idx) in tabs', v-bind:key='tab_idx', :class='{active:tab_idx === currentTabIndex}', @click='currentTabIndex = tab_idx')
         | {{tab.title}}
@@ -295,12 +295,7 @@
     width: 320px;
     height: 240px;
   }
-  #overlay {
-
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
+  .moveable {
     z-index: 1;
   }
   #dragfield {
