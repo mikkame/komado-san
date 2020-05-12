@@ -2,13 +2,14 @@
   #app(@drop="dropFile", @dragover.prevent, @dragenter.prevent, @keydown.shift="pen =true", @keyup="pen =false", tabindex="0")
 
     Moveable.moveable(
-      v-if="camera_src && !full_screen_camera",
+      v-if="camera_stream && !full_screen_camera",
       v-bind="moveable",
       @drag="handleDrag",
       @scale="handleScale"
       :style="{transform:camera_transform}"
     )
-      video(:srcObject.prop="camera_src" v-if="camera_src", autoplay, @dblclick="toggleFulScreenCamera()")#cam
+      #cam-wrap
+        video(:srcObject.prop="camera_stream" v-if="camera_stream", autoplay, @dblclick="toggleFulScreenCamera()")#cam
     .tab-group
       .tab-item(v-for='(tab, tab_idx) in tabs', v-bind:key='tab_idx', :class='{active:tab_idx === currentTabIndex}', @click='currentTabIndex = tab_idx')
         | {{tab.title}}
@@ -18,7 +19,7 @@
         span.icon.icon-plus
     #main_src
       div(v-show='full_screen_camera')#fullCamera-wrap
-        video(:srcObject.prop="camera_src", autoplay, @dblclick="toggleFulScreenCamera()")#fullCamera
+        video(:srcObject.prop="camera_stream", autoplay, @dblclick="toggleFulScreenCamera()")#fullCamera
       div(v-show='!full_screen_camera && tab_idx === currentTabIndex' v-for="(tab, tab_idx) in tabs",).tab-content
         WebTab(:tab='tab', v-if='tab.type === "WebTab"')
         BlankTab(:tab='tab', v-if='tab.type === "BlankTab"' @changeTab='changeTab')
@@ -29,10 +30,11 @@
 
     .footer-bar-wrapper
       .footer-bar
+        select(v-model="camera_src", @change="changeCameraSrc")
+          option(:value="null") カメラなし
+          option(v-for='src in camera_sources', :value="src.deviceId") {{src.label}}
         button.btn.btn-default(@click="toggleCamera()")
-          span.icon.icon-camera
-          | カメラ
-          | {{camera_src ? "Off" : "On"}}
+
 
 </template>
 
@@ -57,7 +59,7 @@
         data: () => {
             return {
 
-                camera_transform:null,
+                camera_transform: null,
                 moveable: {
                     draggable: true,
                     throttleDrag: 0,
@@ -75,50 +77,51 @@
                     },
                 ],
                 currentTabIndex: 0,
+                camera_sources:null,
                 camera_src: null,
+                camera_stream: null,
                 pen: false,
-                pen_drawing:false,
+                pen_drawing: false,
                 pen_strokes: [],
-                full_screen_camera:false
+                full_screen_camera: false
             }
         },
         methods: {
-            strokeToPathString(stroke){
+            strokeToPathString(stroke) {
 
                 return stroke.points.map((point) => {
-                    return 'L ' + point.x +' '+ point.y
+                    return 'L ' + point.x + ' ' + point.y
                 }).join(' ').replace(/^L/, 'M');
             },
-            pen_start(event)
-            {
+            pen_start(event) {
                 const stroke = {
                     points: [],
                 }
-                this.pen_drawing =true
+                this.pen_drawing = true
                 this.pen_strokes.push(stroke)
                 this.pen_stroke(event)
 
             },
-            pen_end(){
-                this.pen_drawing =false
+            pen_end() {
+                this.pen_drawing = false
             },
-            pen_stroke(event){
+            pen_stroke(event) {
 
                 if (this.pen_drawing) {
-                    const stroke = this.pen_strokes[this.pen_strokes.length-1]
-                    const point ={
+                    const stroke = this.pen_strokes[this.pen_strokes.length - 1]
+                    const point = {
                         x: event.offsetX,
                         y: event.offsetY,
                     }
                     setTimeout(() => {
-                        stroke.points.splice(stroke.points.indexOf(point),1)
-                    },1000)
+                        stroke.points.splice(stroke.points.indexOf(point), 1)
+                    }, 1000)
                     stroke.points.push(point)
                 }
             },
-            toggleFulScreenCamera(){
+            toggleFulScreenCamera() {
 
-              this.full_screen_camera = !this.full_screen_camera;
+                this.full_screen_camera = !this.full_screen_camera;
 
             },
             addTab() {
@@ -150,36 +153,50 @@
                     this.currentTabIndex = this.tabs.length - 1;
                 }
             },
-            async toggleCamera() {
-                if (this.camera_src) {
-                    this.camera_src = null;
-                } else {
-                    this.camera_src = await navigator.mediaDevices.getUserMedia({video: true})
-                }
-            },
-            handleDrag({ transform }) {
+            handleDrag({transform}) {
                 this.camera_transform = transform;
 
             },
-            handleScale({ transform, }) {
+            handleScale({transform,}) {
                 this.camera_transform = transform;
+            },
+            async changeCameraSrc() {
+                if (!this.camera_src) {
+                    this.camera_stream = null;
+                    return;
+                }
+                this.camera_stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        optional: [{
+                            sourceId: this.camera_src
+                        }]
+                    }
+                })
             },
             dropFile(event) {
-
                 event.preventDefault()
-                const files =  event.dataTransfer.files;
+                const files = event.dataTransfer.files;
                 for (var i = 0; i < files.length; i++) {
                     let file = files[i]
                     this.tabs.push({
-                        title : file.name,
+                        title: file.name,
                         type: 'FileTab',
                         file
                     })
-                    this.currentTabIndex = this.tabs.length -1;
+                    this.currentTabIndex = this.tabs.length - 1;
                 }
 
             },
         },
+        async mounted() {
+
+            this.camera_sources = (await navigator.mediaDevices.enumerateDevices()).filter((src) => {
+                return src.kind === 'videoinput'
+            })
+            this.camera_src = this.camera_sources.length ? this.camera_sources[0].deviceId : null;
+            this.changeCameraSrc()
+        }
+
 
     }
 </script>
@@ -188,6 +205,7 @@
   .path {
     pointer-events: none;
   }
+
   .pen_field {
     opacity: 0.8;
     mix-blend-mode: hard-light;
@@ -197,29 +215,35 @@
     width: 100%;
     height: 100%;
   }
+
   html, body, #app {
     padding: 0;
     margin: 0;
     height: 100%;
     position: relative;
   }
+
   #fullCamera-wrap {
     width: 100%;
     height: 100%;
     background: black;
     z-index: 10000;
   }
+
   #fullCamera {
     width: 100%;
     height: 100%;
   }
+
   .btn {
     cursor: pointer;
   }
+
   .tab-content {
     height: 100%;
     width: 100%;
   }
+
   span.icon-circle {
     height: 16px;
     width: 16px;
@@ -280,13 +304,20 @@
   .footer-bar-wrapper:hover .footer-bar {
     opacity: 1;
   }
-  #cam {
+  #cam-wrap {
     width: 320px;
     height: 240px;
+    background: #000;
   }
+  #cam {
+    width: 100%;
+    height: 100%;
+  }
+
   .moveable {
     z-index: 1;
   }
+
   #dragfield {
     width: 100%;
     height: 100%;
