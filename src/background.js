@@ -5,7 +5,7 @@ import {createProtocol,} from 'vue-cli-plugin-electron-builder/lib'
 import fs from 'fs'
 import path from 'path'
 const mime = require('mime')
-const localShortcut = require("electron-localshortcut");
+
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -52,7 +52,7 @@ function createWindow() {
             name: path.basename(filepath)
         })
     })
-    let ret = globalShortcut.register('CommandOrControl+D', () => {
+    globalShortcut.register('CommandOrControl+D', () => {
         webContents.send('toggle-draw')
 
     })
