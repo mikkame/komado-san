@@ -2,7 +2,9 @@
 
 import {app, BrowserWindow, protocol} from 'electron'
 import {createProtocol,} from 'vue-cli-plugin-electron-builder/lib'
-
+import fs from 'fs'
+import path from 'path'
+const mime = require('mime')
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -21,7 +23,7 @@ function createWindow() {
             webviewTag: true,
             plugins: true,
             contextIsolation:true,
-            preload: __static + '/preload.js'
+            preload: __static + '/preload.js',
         }
     })
     if (process.env.WEBPACK_DEV_SERVER_URL) {
@@ -37,6 +39,18 @@ function createWindow() {
     win.on('closed', () => {
         win = null
     })
+    const webContents = win.webContents;
+    webContents.addListener('will-navigate', (e, url) => {
+        e.preventDefault()
+        const filepath = url.replace('file://','')
+        const file = fs.readFileSync(filepath, 'base64')
+        const m = mime.getType(filepath)
+        webContents.send('drop-file', {
+            blob:'data:'+m+';base64,'+file,
+            name: path.basename(filepath)
+        })
+    })
+
 }
 
 // Quit when all windows are closed.

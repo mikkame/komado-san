@@ -178,12 +178,19 @@
                 const files = event.dataTransfer.files;
                 for (var i = 0; i < files.length; i++) {
                     let file = files[i]
-                    this.tabs.push({
-                        title: file.name,
-                        type: 'FileTab',
-                        file
-                    })
-                    this.currentTabIndex = this.tabs.length - 1;
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const blob = e.target.result;
+                        this.tabs.push({
+                            title: file.name,
+                            type: 'FileTab',
+                            blob
+                        })
+                        this.currentTabIndex = this.tabs.length - 1;
+                    }
+                    // TODO mime type filter
+                    reader.readAsDataURL(file);
+
                 }
 
             },
@@ -195,6 +202,16 @@
             })
             this.camera_src = this.camera_sources.length ? this.camera_sources[0].deviceId : null;
             this.changeCameraSrc()
+            const vm = this;
+            document.addEventListener('drop-file', (e) => {
+                vm.tabs.push({
+                  title: e.detail.name,
+                  type: 'FileTab',
+                  blob: e.detail.blob
+              })
+                console.log(vm.tabs)
+            })
+
         }
 
 

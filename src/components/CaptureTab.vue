@@ -40,7 +40,7 @@
             }
         },
         async mounted() {
-            const sources = await window.desctipCapture.getSources({types:['window'], thumbnailSize: {width:200,height:200}})
+            const sources = await window.electronApi.desktopCapturer.getSources({types:['window'], thumbnailSize: {width:200,height:200}})
             this.sources = sources
         }
     }

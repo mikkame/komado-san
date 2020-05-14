@@ -1,31 +1,14 @@
 <template lang="pug">
-  iframe(:src.prop="blob", plugins, @drop.prevent, @dragover.prevent)
+  iframe(:src.prop="tab.blob", plugins,)
 </template>
 
 <script>
 
 
     export default {
-        name: 'App',
         props: [
             'tab',
-        ],
-        data(){
-            return {
-                blob:'',
-            }
-        },
-        methods:{
-
-        },
-        mounted() {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              this.blob = e.target.result;
-            }
-            // TODO mime type filter
-            reader.readAsDataURL(this.tab.file);
-        }
+        ]
     }
 </script>
 <style>
