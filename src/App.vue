@@ -1,5 +1,5 @@
 <template lang="pug">
-  #app(@drop="dropFile", @dragover.prevent, @dragenter.prevent, @keydown.shift="pen =true", @keyup="pen =false", tabindex="0")
+  #app(@drop="dropFile", @dragover.prevent, @dragenter.prevent, tabindex="0")
 
     Moveable.moveable(
       v-if="camera_stream && !full_screen_camera",
@@ -25,8 +25,9 @@
         BlankTab(:tab='tab', v-if='tab.type === "BlankTab"' @changeTab='changeTab')
         FileTab(:tab='tab', v-if='tab.type === "FileTab"')
         CaptureTab(:tab='tab', v-if='tab.type === "CaptureTab"')
-      svg.pen_field(v-if="pen", @mousemove.prevent="pen_stroke", @mousedown="pen_start",@mouseout="pen_end",@mouseup="pen_end")
-        path(:d="strokeToPathString(stroke)", v-for="stroke in pen_strokes", fill="transparent" stroke="red" stroke-width="5").path
+    svg.pen_field(v-if="pen", @mousemove.prevent="pen_stroke", @mousedown="pen_start",@mouseout="pen_end",@mouseup="pen_end")
+      span ペンモード Ctrl+D で終了
+      path(:d="strokeToPathString(stroke)", v-for="stroke in pen_strokes", fill="transparent" stroke="red" stroke-width="5").path
 
     .footer-bar-wrapper
       .footer-bar
@@ -211,6 +212,10 @@
               })
                 console.log(vm.tabs)
             })
+            document.addEventListener('toggle-draw', () => {
+                vm.pen = !vm.pen
+                console.log('draw')
+            })
 
         }
 
@@ -231,6 +236,8 @@
     top: 0;
     width: 100%;
     height: 100%;
+    box-shadow: inset 0px 0px 10px 0px rgba(255,0,0,1)
+
   }
 
   html, body, #app {
