@@ -1,7 +1,13 @@
 const { desktopCapturer, contextBridge, ipcRenderer} = require("electron");
 contextBridge.exposeInMainWorld(
     "electronApi", {
-        desktopCapturer,
+        async requestDesktopCapture() {
+            const sources =  await desktopCapturer.getSources({types:['window'], thumbnailSize: {width:200,height:200}})
+            sources.map((src) => {
+                src.thumbnail = src.thumbnail.toDataURL()
+            })
+            return sources
+        },
     },
 );
 

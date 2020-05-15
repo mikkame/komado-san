@@ -1,9 +1,11 @@
 <template lang="pug">
-  div
+  div(style='height:100%')
     #captureSelectot(v-if="!source")
       p 共有する画面を選択してください
-      ul
-        li(v-for="source in sources", @click="pickWindow(source)") {{source.name}}
+      .thumbnails
+        .thumbnail(v-for="source in sources", @click="pickWindow(source)")
+          img(:src='source.thumbnail')
+          p {{source.name}}
     video(:srcObject.prop="source", autoplay, v-if="source").capture
 
 </template>
@@ -40,13 +42,40 @@
             }
         },
         async mounted() {
-            const sources = await window.electronApi.desktopCapturer.getSources({types:['window'], thumbnailSize: {width:200,height:200}})
+            const sources = await window.electronApi.requestDesktopCapture()
             this.sources = sources
+
         }
     }
 </script>
 <style scoped>
-
+  #captureSelectot {
+    height: 100%;
+  }
+  .thumbnails {
+    display: flex;
+    justify-content:center;
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    flex-wrap: wrap;
+  }
+  .thumbnail {
+    margin: 10px;
+    width: 200px;
+    cursor: pointer;
+  }
+  .thumbnail img, .thumbnail p{
+    cursor: pointer;
+  }
+  .thumbnail p{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+    width: 200px;
+    overflow: hidden;
+    text-align: center;
+  }
   iframe{
     width: 98%;
     height: 98%;
