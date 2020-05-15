@@ -25,9 +25,10 @@
         BlankTab(:tab='tab', v-if='tab.type === "BlankTab"' @changeTab='changeTab')
         FileTab(:tab='tab', v-if='tab.type === "FileTab"')
         CaptureTab(:tab='tab', v-if='tab.type === "CaptureTab"')
-    svg.pen_field(v-if="pen", @mousemove.prevent="pen_stroke", @mousedown="pen_start",@mouseout="pen_end",@mouseup="pen_end")
+    div.pen_field(v-if="pen", @mousemove.prevent="pen_stroke", @mousedown="pen_start",@mouseout="pen_end",@mouseup="pen_end")
       span ペンモード Ctrl+D で終了
-      path(:d="strokeToPathString(stroke)", v-for="stroke in pen_strokes", fill="transparent" stroke="red" stroke-width="5").path
+      svg(style='width:100%;height:100%')
+        path(:d="strokeToPathString(stroke)", v-for="stroke in pen_strokes", fill="transparent" stroke="red" stroke-width="5").path
 
     .footer-bar-wrapper
       .footer-bar
