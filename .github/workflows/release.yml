@@ -51,8 +51,10 @@ jobs:
       - name: yarn install
         run: yarn
       - name: build app
-        run: yarn electron:build --publish never
-      - run: zip -r release.zip dist_electron/wipe*.dmg
+        run: yarn electron:build --publish never > /dev/null 2>&1
+        env:
+          CSC_LINK: ${{secrets.CSC_LINK}}
+      - run: zip -r release.zip dist_electron/komado-san-*.dmg
       - name: Get url to upload to release from artifact
         id: get_url
         run: |
