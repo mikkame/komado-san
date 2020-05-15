@@ -50,10 +50,16 @@ jobs:
           name: artifact
       - name: yarn install
         run: yarn
+      - run: yarn version ${{ github.ref }}
       - name: build app
         run: yarn electron:build --publish never > /dev/null 2>&1
         env:
           CSC_LINK: ${{secrets.CSC_LINK}}
+      - name: notarize
+        run: node notarize.js
+        env:
+          APPLE_ID: ${{secrets.APPLE_ID}}
+          APPLE_PASSWORD: ${{secrets.APPLE_PASSWORD}}
       - run: zip -r release.zip dist_electron/komado-san-*.dmg
       - name: Get url to upload to release from artifact
         id: get_url
@@ -86,12 +92,13 @@ jobs:
         shell: bash
       - name: yarn install
         run: yarn
+      - run: yarn version ${{ github.ref }}
       - name: build app
         run: yarn electron:build --publish never
 
         shell: bash
       - name: pickup zip
-        run: 7z a -tzip release.zip dist_electron/wipe*.exe
+        run: 7z a -tzip release.zip dist_electron/komado*.exe
         shell: bash
       - name: Upload release asset
         uses: actions/upload-release-asset@v1.0.1
