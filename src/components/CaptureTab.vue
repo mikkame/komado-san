@@ -42,7 +42,9 @@
             }
         },
         async mounted() {
-            const sources = await window.electronApi.requestDesktopCapture()
+            const sources = (await window.electronApi.requestDesktopCapture()).filter((src)=> {
+                return src.name != '小窓さん'
+            })
             this.sources = sources
 
         }
