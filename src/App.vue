@@ -35,7 +35,7 @@
         select(v-model="camera_src", @change="changeCameraSrc")
           option(:value="null") カメラなし
           option(v-for='src in camera_sources', :value="src.deviceId") {{src.label}}
-        button.btn.btn-default(@click="toggleCamera()")
+
 
 
 </template>
