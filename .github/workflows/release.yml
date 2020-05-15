@@ -50,7 +50,7 @@ jobs:
           name: artifact
       - name: yarn install
         run: yarn
-      - run: yarn version ${{ github.ref }}
+      - run: yarn version --new-version `echo "${{ github.ref }}"| sed -e 's/refs\/tags\///'`
       - name: build app
         run: yarn electron:build --publish never > /dev/null 2>&1
         env:
@@ -92,7 +92,7 @@ jobs:
         shell: bash
       - name: yarn install
         run: yarn
-      - run: yarn version ${{ github.ref }}
+      - run: yarn version --new-version `echo "${{ github.ref }}"| sed -e 's/refs\/tags\///'`
       - name: build app
         run: yarn electron:build --publish never
 
