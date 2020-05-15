@@ -52,6 +52,8 @@ jobs:
         run: yarn
       - name: build app
         run: yarn electron:build --publish never
+        env:
+          CSC_LINK: ${{secrets.CSC_LINK}}
       - run: zip -r release.zip dist_electron/wipe*.dmg
       - name: Get url to upload to release from artifact
         id: get_url
