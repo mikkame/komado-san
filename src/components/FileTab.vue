@@ -1,14 +1,36 @@
 <template lang="pug">
-  iframe(:src.prop="tab.blob", plugins,)
+
+  component(:is="viewerType", :blob="blob")
 </template>
 
 <script>
-
-
+    import PDFViewer from "./PDFViewer";
+    import UnknownViewer from"./UnknownViewer"
     export default {
+        name: "FileTab",
+        components: {
+            PDFViewer,
+            UnknownViewer,
+
+        },
         props: [
             'tab',
-        ]
+        ],
+        computed: {
+            viewerType() {
+                const mime = this.tab.blob.split('base64,',2)[0];
+                if (mime.match('pdf')) {
+                    return 'PDFViewer'
+                }
+                return 'UnknownViewer'
+            },
+            blob() {
+                return this.tab.blob.split('base64,',2)[1]
+            }
+        },
+        mounted() {
+
+        }
     }
 </script>
 <style>

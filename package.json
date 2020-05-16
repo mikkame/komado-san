@@ -15,6 +15,7 @@
   "dependencies": {
     "core-js": "^3.6.4",
     "mime": "^2.4.5",
+    "pdfjs-dist": "^2.3.200",
     "photon": "git+https://github.com/connors/photon.git",
     "pug": "^2.0.4",
     "pug-loader": "^2.4.0",
