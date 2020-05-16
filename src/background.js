@@ -89,10 +89,12 @@ function createWindow() {
 
 }
 ipcMain.on('start-main-app', () => {
-    if (win) {
-        win.close()
-    }
+    const currentWindow = win;
     createWindow()
+    if (currentWindow) {
+        currentWindow.close()
+    }
+
 })
 
 // Quit when all windows are closed.
