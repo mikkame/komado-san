@@ -9,7 +9,8 @@
       :style="{transform:camera_transform}"
     )
       #cam-wrap
-        video(:srcObject.prop="camera_stream" v-if="camera_stream", autoplay, @dblclick="toggleFulScreenCamera()")#cam
+        #flip.btn.btn-default(@click="camera_flip = !camera_flip") カメラ反転
+        video(:srcObject.prop="camera_stream" v-if="camera_stream", autoplay, @dblclick="toggleFulScreenCamera()", :style="{transform:'scaleX('+(camera_flip ? -1 :1)+')'}")#cam
     .tab-group
       .tab-item(v-for='(tab, tab_idx) in tabs', v-bind:key='tab_idx', :class='{active:tab_idx === currentTabIndex}', @click='currentTabIndex = tab_idx')
         | {{tab.title}}
@@ -60,7 +61,7 @@
         },
         data: () => {
             return {
-
+                camera_flip:true,
                 camera_transform: null,
                 moveable: {
                     draggable: true,
@@ -267,6 +268,15 @@
   .tab-content {
     height: 100%;
     width: 100%;
+  }
+  #cam-wrap:hover #flip{
+    display: block;
+  }
+  #flip {
+    display: none;
+    position: absolute;
+    z-index: 1;
+    margin: 4px;
   }
 
   span.icon-circle {
