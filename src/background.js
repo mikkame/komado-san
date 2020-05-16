@@ -82,7 +82,6 @@ function createWindow() {
     })
     globalShortcut.register('CommandOrControl+D', () => {
         webContents.send('toggle-draw')
-
     })
 
 
