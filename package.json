@@ -1,6 +1,6 @@
 {
   "name": "komado-san",
-  "version": "0.0.13-alpha",
+  "version": "0.1.0-beta",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
