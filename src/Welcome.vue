@@ -3,12 +3,12 @@
     .slider
       .tips Tips
       carousel(
-        per-page="1",
-        autoplay="true",
-        autoplayHoverPause="false",
-        autoplayTimeout="6000",
-        speed="1000",
-        loop="true"
+        :per-page="1",
+        :autoplay="true",
+        :autoplayHoverPause="false",
+        :autoplayTimeout="6000",
+        :speed="1000",
+        :loop="true"
         paginationActiveColor="#efefef",
         paginationColor="#000000"
       )
