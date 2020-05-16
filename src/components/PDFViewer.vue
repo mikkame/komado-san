@@ -5,6 +5,9 @@
 
 <script>
     import PDFJS from 'pdfjs-dist';
+    const pdfjsWorker = import('pdfjs-dist/build/pdf.worker.entry');
+
+    PDFJS.GlobalWorkerOptions.workerSrc = pdfjsWorker;
     import PDFPage from "./PDFPage";
     export default {
         name: "PDFViewer",
