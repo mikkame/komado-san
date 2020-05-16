@@ -11,6 +11,18 @@
 小窓さんはこのような問題を解決します。
 通知を巻き込むことなく、ワイプ付き画面を共有できます。
 
+# 機能
+
+- PDFビューワ
+- ウェブビューワ
+- お絵かきツール
+- 画面取り込み
+- Windows / Mac 対応
+- オープンソース開発
+
+# ダウンロード
+
+- [Releases](https://github.com/mikkame/komado-san/releases) からダウンロードいただけます。
 
 # Special Thanks for
 
