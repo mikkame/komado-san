@@ -10,7 +10,7 @@
           span.icon.icon-cw
         button.btn.btn-large.btn-default(@click="loadStop", v-if="loading")
           span.icon.icon-cancel
-      form(@submit="loadURL")
+      form(@submit="loadURL", style="width:100%")
         input.form-control(v-model="current_address")
     webview(:src='tab.url', )
 

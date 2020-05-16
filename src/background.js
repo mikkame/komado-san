@@ -1,6 +1,6 @@
 'use strict'
 
-import {app, BrowserWindow, protocol, globalShortcut} from 'electron'
+import {app, BrowserWindow, protocol, globalShortcut, ipcMain} from 'electron'
 import {createProtocol,} from 'vue-cli-plugin-electron-builder/lib'
 import fs from 'fs'
 import path from 'path'
@@ -16,6 +16,34 @@ let win
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{scheme: 'app', privileges: {secure: true, standard: true}}])
 
+
+function createWelcomeWindow() {
+    win = new BrowserWindow({
+        width: 1024, height: 576,webPreferences: {
+            nodeIntegration: false,
+            contextIsolation:true,
+            preload: __static + '/preload.js',
+        },
+
+        preload: __static + '/preload.js',
+    })
+    if (process.env.WEBPACK_DEV_SERVER_URL) {
+        // Load the url of the dev server if in development mode
+
+        win.loadURL(process.env.WEBPACK_DEV_SERVER_URL+'welcome')
+        if (!process.env.IS_TEST) win.webContents.openDevTools()
+    } else {
+        createProtocol('app')
+        // Load the index.html when not in development
+        win.loadURL('app://./welcome.html')
+    }
+    win.on('closed', () => {
+        win = null
+    })
+    win.on
+
+
+}
 function createWindow() {
     // Create the browser window.
 
@@ -60,6 +88,12 @@ function createWindow() {
 
 
 }
+ipcMain.on('start-main-app', () => {
+    if (win) {
+        win.close()
+    }
+    createWindow()
+})
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
@@ -74,7 +108,7 @@ app.on('activate', () => {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (win === null) {
-        createWindow()
+        createWelcomeWindow()
     }
 })
 
@@ -96,8 +130,9 @@ app.on('ready', async () => {
         // }
 
     }
-    createWindow()
+    createWelcomeWindow()
 })
+
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {

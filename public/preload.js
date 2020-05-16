@@ -1,4 +1,4 @@
-const { desktopCapturer, contextBridge, ipcRenderer} = require("electron");
+const {app, desktopCapturer, contextBridge, ipcRenderer} = require("electron");
 contextBridge.exposeInMainWorld(
     "electronApi", {
         async requestDesktopCapture() {
@@ -8,6 +8,9 @@ contextBridge.exposeInMainWorld(
             })
             return sources
         },
+        startMainApp() {
+            ipcRenderer.send("start-main-app")
+        }
     },
 );
 

@@ -20,6 +20,7 @@
     "pug-loader": "^2.4.0",
     "pug-plain-loader": "^1.0.0",
     "vue": "^2.6.11",
+    "vue-carousel": "^0.18.0",
     "vue-moveable": "^1.8.1"
   },
   "devDependencies": {
