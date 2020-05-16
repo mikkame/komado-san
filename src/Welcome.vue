@@ -21,6 +21,9 @@
         slide
           .slide-contents
             p 画面下部にカーソルを合わせるとカメラの切り替えができます
+        slide
+          .slide-contents
+            p ワイプをダブルクリックで全画面表示できます
     .options
       h1 小窓さんはオンライン会議支援ツールです
       ul
