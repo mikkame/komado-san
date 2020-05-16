@@ -1,20 +1,22 @@
-# CODE NAME -> wipe
+# 小窓さん
 
-# 正式名称募集中 -> [#10](https://github.com/mikkame/the_wipe/issues/10)
+小窓さんはオンライン会議支援ツールです
 
-# What's this
+- 表示するつもりがなかった資料
+- メール通知
+- チャット通知
 
-https://note.com/fladdict/n/n52d2ede146a2
+が間違って配信されてしまったことはありませんか？
 
-> ZOOMでの授業配信、ウェビナー用にこなあアプリ欲しい。とりあえず、脳内にあるもののワイヤーを描いた。
- 雑にいうと「ファイルビューワー・ブラウザにウェブカムの小窓がついたアプリ」が欲しいのです。
- ![とりあえず直リンでごめんなさい](https://d2l930y2yx77uc.cloudfront.net/production/uploads/images/25272753/picture_pc_bebb6526077f88a17def526850d539cd.png)
- こいうのがあるとZOOMの「画像共有」機能でそのまま、ワイプつきプレゼンができる。ウェブカムはドラッグ&ドロップで、移動やリサイズできる。
-> 
-> 現状はこういうのは、ちょっと凝ったバーチャルカメラや、物理デバイスが必要だけど…ソフトウェア1本で解決すると、かなり便利なんじゃないかぁ。
+小窓さんはこのような問題を解決します。
+通知を巻き込むことなく、ワイプ付き画面を共有できます。
 
-こういう物が欲しいらしい！
-Electronでできそうだし作ろうじゃないか！
+
+# Special Thanks for
+
+- [fladdict](https://twitter.com/fladdict) 
+  - [アイデア](https://note.com/fladdict/n/n52d2ede146a2)を提供いただきました
+
 
 ## Project setup
 ```
